@@ -1,3 +1,4 @@
 node_modules
-authorization_code/app.js
+auth-server/app.js
+client/node_modules
 

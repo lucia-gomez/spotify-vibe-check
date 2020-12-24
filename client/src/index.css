@@ -1,0 +1,77 @@
+body {
+  --black: #000;
+  --light-black: #121212;
+  --light-gray: #8b8b8b;
+  --gray: #404040;
+  --white: #fff;
+  --gray-body-text: #b2b2b2;
+  --green: #1DB954;
+  background-color: var(--light-black);
+  color: var(--gray-body-text);
+  font-family: 'Montserrat', sans-serif;
+  height: 100vh;
+  margin: 0px;
+}
+
+.row .col {
+  padding: 0px;
+}
+
+nav {
+  background-color: var(--black);
+  box-shadow: #101010 2px 2px 5px;
+  color: var(--gray-body-text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 20vw;
+}
+
+h1 {
+  color: var(--white);
+  margin: 0px;
+}
+
+p {
+  line-height: normal;
+}
+
+#playlists-title {
+  padding-left: 20px;
+}
+
+.collection {
+  border: none;
+  border-radius: 0px;
+  height: 80vh;
+  overflow: hidden; 
+  overflow-y: scroll;
+}
+
+.collection::-webkit-scrollbar-thumb {
+  background: var(--gray);
+  border-radius: 100px;
+}
+
+.collection::-webkit-scrollbar {
+  background: none;
+  width: 10px;
+}
+
+.collection a.collection-item {
+  background: var(--black);
+  border: none;
+  color: var(--light-gray);
+}
+
+.collection .collection-item.active {
+  background: var(--light-black);
+  border-left: 5px solid var(--green);
+}
+
+.collection .collection-item:hover {
+  background: var(--black)!important;
+  color: var(--white);
+}
+
+

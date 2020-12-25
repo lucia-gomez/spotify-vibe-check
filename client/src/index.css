@@ -6,7 +6,10 @@ body {
   --white: #fff;
   --gray-body-text: #b2b2b2;
   --green: #1DB954;
-  background-color: var(--light-black);
+  --orange: rgba(231, 174, 15, 0.4);
+  --pink: rgba(226, 17, 114, 0.2);
+  background: rgb(51,51,51);
+  background: linear-gradient(180deg, rgba(51,51,51,1) 0%, rgba(18,18,18,1) 50%);
   color: var(--gray-body-text);
   font-family: 'Montserrat', sans-serif;
   height: 100vh;
@@ -17,7 +20,14 @@ body {
   padding: 0px;
 }
 
-nav {
+.body-header {
+  /* background: rgb(51,51,51);
+  background: linear-gradient(180deg, rgba(51,51,51,1) 21%, rgba(18,18,18,1) 100%); */
+  margin-bottom: 50px;
+  padding: 20px;
+}
+
+.side-nav {
   background-color: var(--black);
   box-shadow: #101010 2px 2px 5px;
   color: var(--gray-body-text);
@@ -29,15 +39,32 @@ nav {
 
 h1 {
   color: var(--white);
+  font-weight: 900;
   margin: 0px;
+}
+
+h2 {
+  font-weight: 600;
+  margin: 0px;
+  padding-top: 10px;
 }
 
 p {
   line-height: normal;
 }
 
+.btn, .btn-large{
+  background-color: var(--green)!important;
+  border-radius: 100px;
+  color: var(--white);
+}
+
 #playlists-title {
   padding-left: 20px;
+}
+
+.divider {
+  background-color: var(--light-black);
 }
 
 .collection {
@@ -58,7 +85,7 @@ p {
   width: 10px;
 }
 
-.collection a.collection-item {
+.collection *.collection-item {
   background: var(--black);
   border: none;
   color: var(--light-gray);
@@ -69,9 +96,68 @@ p {
   border-left: 5px solid var(--green);
 }
 
+.collection .collection-item.active:hover {
+  background: var(--light-black);
+}
+
 .collection .collection-item:hover {
-  background: var(--black)!important;
+  background: var(--black);
   color: var(--white);
 }
 
+#profile-pic {
+  border-radius: 300px;
+  height: 30px;
+  margin-right: 5px;
+}
 
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+#profile-info {
+  right: 30px;
+  top: 5px;
+  position: absolute;
+}
+
+#login {
+  height: 100vh;
+}
+
+#login a {
+  margin: auto;
+}
+
+#logo {
+  padding: 20px;
+  width: 200px;
+}
+
+.pulse {
+  transform-origin: left top;
+  animation: pulse 3s infinite;
+  -webkit-animation: pulse 3s infinite;
+  width: fit-content;
+}
+
+@keyframes pulse {
+	0% {
+    transform: scale(1);
+    color: var(--green);
+    text-shadow: -4px -4px 0 var(--orange), -8px -8px 0 var(--pink);
+	}
+
+	70% {
+    transform: scale(0.95);
+    color: var(--green);
+    text-shadow: none;
+	}
+
+	100% {
+    transform: scale(1);
+    color: var(--green);
+    text-shadow: -4px -4px 0 var(--orange), -8px -8px 0 var(--pink);
+  }
+}

@@ -36,7 +36,7 @@ class Body extends React.Component {
             </div> : null}
           </div>
           : <div className="valign-wrapper" id="login">
-            <a href='http://localhost:8888/login' className="waves-effect waves-light btn-large">Login to Spotify </a>
+            <a href='http://localhost:8888/login' className="btn-large pulse-btn">Login to Spotify </a>
           </div>
         }
       </div>

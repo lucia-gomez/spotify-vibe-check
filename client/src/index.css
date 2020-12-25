@@ -20,9 +20,11 @@ body {
   padding: 0px;
 }
 
+.col {
+  flex-basis: unset;
+}
+
 .body-header {
-  /* background: rgb(51,51,51);
-  background: linear-gradient(180deg, rgba(51,51,51,1) 21%, rgba(18,18,18,1) 100%); */
   margin-bottom: 50px;
   padding: 20px;
 }
@@ -94,6 +96,7 @@ p {
 .collection .collection-item.active {
   background: var(--light-black);
   border-left: 5px solid var(--green);
+  padding-left: 15px;
 }
 
 .collection .collection-item.active:hover {
@@ -108,7 +111,7 @@ p {
 #profile-pic {
   border-radius: 300px;
   height: 30px;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 .flex-row {
@@ -117,9 +120,16 @@ p {
 }
 
 #profile-info {
-  right: 30px;
+  right: 10px;
   top: 5px;
   position: absolute;
+  border-radius: 75px;
+  background: var(--gray);
+  padding: 5px 15px;
+}
+
+#profile-info p {
+  margin: 0px;
 }
 
 #login {
@@ -133,6 +143,29 @@ p {
 #logo {
   padding: 20px;
   width: 200px;
+}
+
+.dropdown-toggle::after {
+  content: none;
+}
+
+.dropdown-menu {
+  background: var(--gray);
+  top: 5px!important;
+}
+
+.dropdown-item {
+  color: var(--gray-body-text);
+  text-align: center;
+}
+
+.dropdown-item:hover {
+  background: var(--gray);
+  color: var(--white);
+}
+
+.material-icons {
+  line-height: unset;
 }
 
 .pulse {
@@ -159,5 +192,27 @@ p {
     transform: scale(1);
     color: var(--green);
     text-shadow: -4px -4px 0 var(--orange), -8px -8px 0 var(--pink);
+  }
+}
+
+.pulse-btn {
+  animation: pulse 3s infinite;
+  -webkit-animation: pulse-btn 3s infinite;
+}
+
+@keyframes pulse-btn {
+	0% {
+    transform: scale(1);
+    box-shadow: 0px -6px 0 var(--orange), 0px -12px 0 var(--pink);
+	}
+
+	70% {
+    transform: scale(0.95);
+    box-shadow: none;
+	}
+
+	100% {
+    transform: scale(1);
+    box-shadow: 0px -6px 0 var(--orange), 0px -12px 0 var(--pink);
   }
 }

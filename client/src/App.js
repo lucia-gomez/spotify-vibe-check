@@ -67,8 +67,7 @@ class App extends React.Component {
             >
               {playlist.name}
             </div>
-          }
-          )}
+          })}
         </div>
       </div>
     )
@@ -80,12 +79,10 @@ class App extends React.Component {
   async clickPlaylistItem(playlist, i) {
     this.setState((prevState) => {
       const isSame = prevState.activePlaylist === i;
-      return (
-        {
-          activePlaylist: isSame ? -1 : i,
-          activePlaylistName: isSame ? undefined : playlist.name,
-        }
-      )
+      return ({
+        activePlaylist: isSame ? -1 : i,
+        activePlaylistName: isSame ? undefined : playlist.name,
+      })
     }, () =>
       this.getPlaylistChart(playlist)
     );
@@ -112,8 +109,6 @@ class App extends React.Component {
         }
       ]
     };
-
-    // return chartData;
     this.setState({ chartData: chartData });
   }
 

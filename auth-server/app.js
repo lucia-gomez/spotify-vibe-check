@@ -1,9 +1,9 @@
 const prod = "https://spotify-vibe-check.herokuapp.com";
 const dev = "http://localhost:3000";
-const client_url = (process.env.NODE_ENV ? prod : dev);
+const client_url = (process.env.NODE_ENV === 'production' ? prod : dev);
 
 const port = process.env.PORT || 8888;
-const server_url = (process.env.NODE_ENV ? prod : "http://localhost:" + port);
+const server_url = (process.env.NODE_ENV === 'production' ? prod : "http://localhost:" + port);
 
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
@@ -12,7 +12,7 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
 var client_id = 'f726b221632b49cca6e2c371ca045921'; // Your client id
-var client_secret = 'SECRET'; // Your secret
+var client_secret = process.env.CLIENT_SECRET || 'SECRET'; // Your secret
 var redirect_uri = server_url + '/callback'; // Your redirect uri
 
 /**

@@ -1,4 +1,5 @@
 import React from 'react'
+import { server_url } from './util';
 
 class Nav extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class Nav extends React.Component {
         <i className="material-icons" >expand_more</i>
       </div>
       <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-        <a className="dropdown-item" href="http://localhost:8888/logout">Log Out</a>
+        <a className="dropdown-item" href={server_url + "/logout"}>Log Out</a>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from 'react'
 import Nav from './nav'
 import { Radar } from '@reactchartjs/react-chart.js'
+import { server_url } from './util';
 
 const chartOptions = {
   scale: {
@@ -36,7 +37,7 @@ class Body extends React.Component {
             </div> : null}
           </div>
           : <div className="valign-wrapper" id="login">
-            <a href='http://localhost:8888/login' className="btn-large pulse-btn">Login to Spotify </a>
+            <a href={server_url + '/login'} className="btn-large pulse-btn">Login to Spotify </a>
           </div>
         }
       </div>

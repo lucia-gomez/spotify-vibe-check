@@ -33,11 +33,15 @@ class App extends React.Component {
     return (
       <div className='App' >
         <div className="row">
-          <div className="side-nav col s12 m4 l3">
+          <div className="side-nav col s12 m3 l3">
             <img src={Logo} id="logo" alt="Spotify logo"></img>
             {this.renderPlaylists()}
+            <div id='side-footer' className='flex-row valign-wrapper'>
+              <p>Lucia Gomez</p>
+              <a href="http://lucia-gomez.netlify.app"><i className="material-icons">launch</i></a>
+            </div>
           </div>
-          <div className="content col s12 m8 l9">
+          <div className="content col s12 m9 l9">
             <Body
               chartData={this.state.chartData}
               loggedIn={this.state.loggedIn}

@@ -1,1 +1,1 @@
-web: node ./auth_server/app.js
+web: node server

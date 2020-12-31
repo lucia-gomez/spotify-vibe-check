@@ -5,6 +5,7 @@ body {
   --gray: #404040;
   --white: #fff;
   --gray-body-text: #b2b2b2;
+  --light-black-mobile: #121312;
   --green: #1DB954;
   --orange: rgba(231, 174, 15, 0.4);
   --pink: rgba(226, 17, 114, 0.2);
@@ -14,6 +15,12 @@ body {
   font-family: 'Montserrat', sans-serif;
   height: 100vh;
   margin: 0px;
+}
+
+@media only screen and (max-width: 576px) {
+  body {
+    background: var(--light-black-mobile);
+  }
 }
 
 .row .col {
@@ -29,7 +36,13 @@ body {
   padding: 20px;
 }
 
-.side-nav {
+@media only screen and (max-width: 576px) {
+  .body-header {
+    margin-bottom: 0px;
+  }
+}
+
+.side-nav-custom {
   background-color: var(--black);
   box-shadow: #101010 2px 2px 5px;
   color: var(--gray-body-text);
@@ -38,6 +51,16 @@ body {
   justify-content: space-between;
   height: 100vh;
   min-height: 100vh;
+}
+
+#slide-out {
+  background-color: var(--black);
+  color: var(--gray-body-text);
+  padding-left: 20px;
+}
+
+nav {
+  background: none;
 }
 
 h1 {
@@ -122,6 +145,11 @@ p {
   flex-direction: row;
 }
 
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 #profile-info {
   right: 10px;
   top: 5px;
@@ -129,6 +157,21 @@ p {
   border-radius: 75px;
   background: var(--gray);
   padding: 5px 15px;
+}
+
+@media only screen and (max-width: 576px) {
+  #profile-info {
+    /* background: none; */
+    border-radius: 100px;
+    padding: 5px;
+    right: 10px;
+    top: 20px;
+  }
+
+  #profile-pic {
+    height: 40px;
+    margin: 0px;
+  }
 }
 
 #profile-info p {
@@ -148,13 +191,45 @@ p {
   width: 200px;
 }
 
+.playlist-item {
+  padding: 10px 20px;
+}
+
+.playlist-item img {
+  width: 60px;
+}
+
+.playlist-item .flex-col {
+  padding-left: 10px;
+}
+
+.playlist-item h6 {
+  color: var(--white);
+}
+
+.playlist-item p {
+  color: var(--light-gray);
+}
+
+@media only screen and (max-width: 576px) {
+  #logo {
+    padding: 0px;
+    height: 40px;
+    width: unset;
+    margin-left: -5px;
+    margin-top: 15px;
+  }
+}
+
 .dropdown-toggle::after {
   content: none;
 }
 
 .dropdown-menu {
   background: var(--gray);
+  /* display: block; */
   top: 5px!important;
+  z-index: 9999;
 }
 
 .dropdown-item {
@@ -190,7 +265,7 @@ p {
   transform-origin: left top;
   animation: pulse 3s infinite;
   -webkit-animation: pulse 3s infinite;
-  width: fit-content;
+  width: 70%;
 }
 
 @keyframes pulse {

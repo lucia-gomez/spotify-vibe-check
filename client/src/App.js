@@ -1,6 +1,7 @@
 import React from 'react';
 import SpotifyWebApi from 'spotify-web-api-js';
 import Body from './body';
+import MobilePlaylistItem from './mobilePlaylistItem';
 
 import Logo from './assets/logo_green.png';
 
@@ -33,7 +34,7 @@ class App extends React.Component {
     return (
       <div className='App' >
         <div className="row">
-          <div className="side-nav col s12 m3 l3">
+          <div className="side-nav-custom col s12 m3 l3 hide-on-small-only">
             <img src={Logo} id="logo" alt="Spotify logo"></img>
             {this.renderPlaylists()}
             <div id='side-footer' className='flex-row valign-wrapper'>
@@ -49,6 +50,7 @@ class App extends React.Component {
               profilePicURL={this.state.profilePicURL}
               username={this.state.username}
               userPageURL={this.state.userPageURL}
+              renderPlaylistsMobile={() => this.renderPlaylistsMobile()}
             />
           </div>
         </div>
@@ -75,6 +77,18 @@ class App extends React.Component {
         </div>
       </div>
     )
+  }
+
+  renderPlaylistsMobile() {
+    return (
+      <ul>
+        {this.state.playlists.map((playlist, i) =>
+          <div onClick={() => this.clickPlaylistItem(playlist, i)} key={i}>
+            {MobilePlaylistItem(playlist.images[0].url, playlist.name, playlist.owner.display_name)}
+          </div>
+        )}
+      </ul>
+    );
   }
 
   /**

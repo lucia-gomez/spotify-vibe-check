@@ -1,9 +1,13 @@
 import React from 'react';
+import { Router, Link } from "@reach/router"
 import SpotifyWebApi from 'spotify-web-api-js';
-import Body from './body';
-import MobilePlaylistItem from './mobilePlaylistItem';
 
-import Logo from './assets/logo_green.png';
+import Playlists from './playlists';
+import Stats from './stats';
+import Settings from './settings';
+import SideNav from './sideNav';
+
+import { server_url } from './util';
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -17,6 +21,11 @@ class App extends React.Component {
     profilePicURL: undefined,
     username: '???',
     userPageURL: '/#',
+  }
+
+  constructor(props) {
+    super(props);
+    this.clickPlaylistItem = this.clickPlaylistItem.bind(this);
   }
 
   async componentDidMount() {
@@ -33,61 +42,83 @@ class App extends React.Component {
   render() {
     return (
       <div className='App' >
-        <div className="row">
-          <div className="side-nav-custom col s12 m3 l3 hide-on-small-only">
-            <img src={Logo} id="logo" alt="Spotify logo"></img>
-            {this.renderPlaylists()}
-            <div id='side-footer' className='flex-row valign-wrapper'>
-              <p>Lucia Gomez</p>
-              <a href="http://lucia-gomez.netlify.app"><i className="material-icons">launch</i></a>
-            </div>
-          </div>
-          <div className="content col s12 m9 l9">
-            <Body
-              chartData={this.state.chartData}
-              loggedIn={this.state.loggedIn}
-              playlistName={this.state.activePlaylistName}
-              profilePicURL={this.state.profilePicURL}
-              username={this.state.username}
-              userPageURL={this.state.userPageURL}
-              renderPlaylistsMobile={() => this.renderPlaylistsMobile()}
-            />
-          </div>
-        </div>
+        {this.state.loggedIn ? this.content() :
+          <div className="valign-wrapper" id="login">
+            <a href={server_url + '/login'} className="btn-large pulse-btn">Login to Spotify </a>
+          </div>}
       </div >
     )
   }
 
-  renderPlaylists() {
+  content() {
     return (
-      <div>
-        <p id='playlists-title'>YOUR PLAYLISTS</p>
-        <div className="divider" />
-        <div className="collection">
-          {this.state.playlists.map((playlist, i) => {
-            const active = this.state.activePlaylist === i ? 'active' : '';
-            return <div
-              className={"collection-item " + active}
-              key={i}
-              onClick={() => this.clickPlaylistItem(playlist, i)}
-            >
-              {playlist.name}
-            </div>
-          })}
+      <>
+        <div className='hide-on-small-only'>
+          {this.desktopContent()}
         </div>
-      </div>
-    )
+        <div className='hide-on-med-and-up'>
+          {this.mobileContent()}
+        </div>
+      </>
+    );
   }
 
-  renderPlaylistsMobile() {
+  desktopContent() {
     return (
-      <ul>
-        {this.state.playlists.map((playlist, i) =>
-          <div onClick={() => this.clickPlaylistItem(playlist, i)} key={i}>
-            {MobilePlaylistItem(playlist.images[0].url, playlist.name, playlist.owner.display_name)}
-          </div>
-        )}
-      </ul>
+      <div className="row">
+        <div className='col s12 m3 l3 side-nav-custom'>
+          {SideNav(this.state.playlists, this.state.activePlaylist, this.clickPlaylistItem)}
+        </div>
+        <div className='content col s12 m9 l9 '>
+          <Stats
+            chartData={this.state.chartData}
+            loggedIn={this.state.loggedIn}
+            playlistName={this.state.activePlaylistName}
+            profilePicURL={this.state.profilePicURL}
+            username={this.state.username}
+            userPageURL={this.state.userPageURL}
+            renderPlaylistsMobile={() => this.renderPlaylistsMobile()}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  mobileContent() {
+    return (
+      <>
+        <Router>
+          <Playlists
+            path="/"
+            playlists={this.state.playlists}
+            onclick={this.clickPlaylistItem}
+          />
+          <Stats
+            path="/stats"
+            chartData={this.state.chartData}
+            loggedIn={this.state.loggedIn}
+            playlistName={this.state.activePlaylistName}
+            profilePicURL={this.state.profilePicURL}
+            username={this.state.username}
+            userPageURL={this.state.userPageURL}
+          />
+          <Settings path="/settings" />
+        </Router>
+        <div id='tabs' className='valign-wrapper'>
+          <Link to="/">
+            <div className='tab-btn'>
+              <i className='material-icons-outlined'>library_music</i>
+              <p>Playlists</p>
+            </div>
+          </Link>
+          <Link to='/settings'>
+            <div className='tab-btn'>
+              <i className='material-icons-outlined'>settings</i>
+              <p>Settings</p>
+            </div>
+          </Link>
+        </div>
+      </>
     );
   }
 
@@ -116,18 +147,23 @@ class App extends React.Component {
     }
 
     const stats = await this.getPlaylistStats(playlist);
-    const chartData = {
-      labels: stats.labels,
-      datasets: [
-        {
-          data: stats.data,
-          backgroundColor: 'rgba(29, 185, 84, 0.5)',
-          borderColor: 'rgba(5, 237, 87, 1)',
-          borderWidth: 1,
-        }
-      ]
-    };
-    this.setState({ chartData: chartData });
+    if (stats !== null) {
+      const chartData = {
+        labels: stats.labels,
+        datasets: [
+          {
+            data: stats.data,
+            backgroundColor: 'rgba(29, 185, 84, 0.5)',
+            borderColor: 'rgba(5, 237, 87, 1)',
+            borderWidth: 1,
+          }
+        ]
+      };
+      this.setState({ chartData: chartData });
+    }
+    else {
+      this.setState({ chartData: undefined })
+    }
   }
 
   async getPlaylists() {

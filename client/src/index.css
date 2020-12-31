@@ -2,10 +2,11 @@ body {
   --black: #000;
   --light-black: #121212;
   --light-gray: #8b8b8b;
-  --gray: #404040;
+  --gray: #383838;
   --white: #fff;
   --gray-body-text: #b2b2b2;
   --light-black-mobile: #121312;
+  --gray-mobile: #232323;
   --green: #1DB954;
   --orange: rgba(231, 174, 15, 0.4);
   --pink: rgba(226, 17, 114, 0.2);
@@ -13,6 +14,7 @@ body {
   background: linear-gradient(180deg, rgba(51,51,51,1) 0%, rgba(18,18,18,1) 50%);
   color: var(--gray-body-text);
   font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   height: 100vh;
   margin: 0px;
 }
@@ -36,10 +38,8 @@ body {
   padding: 20px;
 }
 
-@media only screen and (max-width: 576px) {
-  .body-header {
-    margin-bottom: 0px;
-  }
+#body-header-mobile {
+  padding: 20px 10px;
 }
 
 .side-nav-custom {
@@ -63,10 +63,15 @@ nav {
   background: none;
 }
 
-h1 {
+h1, h3, h4 {
   color: var(--white);
-  font-weight: 900;
+  font-weight: 800;
   margin: 0px;
+}
+
+h4 {
+  color: var(--gray-body-text);
+  margin-top: 10px;
 }
 
 h2 {
@@ -75,16 +80,37 @@ h2 {
   padding-top: 10px;
 }
 
+h6 {
+  font-weight: 600;
+  margin-top: 0px;
+  margin-bottom: 2px;
+}
+
 p {
   line-height: normal;
   margin: 0px;
   width: fit-content;
 }
 
+a {
+  color: var(--gray-body-text);
+}
+
+a:hover {
+  color: var(--gray-body-text);
+  text-decoration: none;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 15px;
+}
+
 .btn, .btn-large{
   background-color: var(--green)!important;
   border-radius: 100px;
   color: var(--white);
+  margin: auto;
 }
 
 #playlists-title {
@@ -182,17 +208,13 @@ p {
   height: 100vh;
 }
 
-#login a {
-  margin: auto;
-}
-
 #logo {
   padding: 20px;
   width: 200px;
 }
 
 .playlist-item {
-  padding: 10px 20px;
+  padding: 10px;
 }
 
 .playlist-item img {
@@ -259,6 +281,22 @@ p {
 
 #side-footer a:hover {
   color: var(--gray-body-text);
+}
+
+#tabs {
+  height: 75px;
+  width: 100%;
+  background-color: var(--gray-mobile);
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
+}
+
+.tab-btn {
+  font-weight: 400;
+  text-align: center;
 }
 
 .pulse {

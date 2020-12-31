@@ -2,8 +2,12 @@ import Logo from './assets/logo_green.png';
 
 const SideNav = (playlists, activePlaylist, onclick) => {
   return (
-    <div className="">
+    <div className="side-nav-custom">
       <img src={Logo} id="logo" alt="Spotify logo"></img>
+      <div>
+        <p id='playlists-title'>YOUR PLAYLISTS</p>
+        <div className="divider" />
+      </div>
       {renderPlaylists(playlists, activePlaylist, onclick)}
       <div id='side-footer' className='flex-row valign-wrapper'>
         <p>Lucia Gomez</p>
@@ -15,10 +19,8 @@ const SideNav = (playlists, activePlaylist, onclick) => {
 
 function renderPlaylists(playlists, activePlaylist, onclick) {
   return (
-    <div>
-      <p id='playlists-title'>YOUR PLAYLISTS</p>
-      <div className="divider" />
-      <div className="collection">
+    <div className='collection'>
+      <div >
         {playlists.map((playlist, i) => {
           const active = activePlaylist === i ? 'active' : '';
           return <div

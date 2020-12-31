@@ -66,7 +66,7 @@ class App extends React.Component {
   desktopContent() {
     return (
       <div className="row">
-        <div className='col s12 m3 l3 side-nav-custom'>
+        <div className='col s12 m3 l3'>
           {SideNav(this.state.playlists, this.state.activePlaylist, this.clickPlaylistItem)}
         </div>
         <div className='content col s12 m9 l9 '>

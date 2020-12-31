@@ -41,10 +41,15 @@ class Stats extends React.Component {
       <>
         <div className='body-header'>
           <Nav profilePicURL={this.props.profilePicURL} username={this.props.username} />
-          <h1>Vibe Check...</h1>
-          <h2 className={this.props.playlist ? '' : 'pulse'}>
-            {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
-          </h2>
+          <div className='flex-row'>
+            {this.getCoverArt()}
+            <div className='flex-col' style={{ alignSelf: 'flex-end' }}>
+              <h1>Vibe Check...</h1>
+              <h2 className={this.props.playlist ? '' : 'pulse'}>
+                {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
+              </h2>
+            </div>
+          </div>
         </div>
         <div>
           {this.props.chartData ? <div className="chart-container" style={{ position: 'relative' }}>
@@ -65,16 +70,22 @@ class Stats extends React.Component {
       <div className='page'>
         {this.props.playlist ? <>
           <div id='body-header-mobile'>
-            <div id='cover-wrapper'>
-              <img src={this.props.playlist.images[0].url} alt='playlist cover art' />
-              <img src={this.props.playlist.images[0].url} id='blurred' alt='playlist cover art blurred' />
-            </div>
+            {this.getCoverArt()}
             <h3>Vibe Check...</h3>
             <h4>{this.props.playlist.name}</h4>
           </div>
           <div>{stats}</div>
         </> : null}
       </div>
+    );
+  }
+
+  getCoverArt() {
+    return (this.props.playlist ?
+      <div id='cover-wrapper'>
+        <img src={this.props.playlist.images[0].url} alt='playlist cover art' />
+        <img src={this.props.playlist.images[0].url} id='blurred' alt='playlist cover art blurred' />
+      </div> : null
     );
   }
 

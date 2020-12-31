@@ -73,7 +73,7 @@ class App extends React.Component {
           <Stats
             chartData={this.state.chartData}
             loggedIn={this.state.loggedIn}
-            playlistName={this.state.activePlaylistName}
+            playlist={this.state.playlists[this.state.activePlaylist]}
             profilePicURL={this.state.profilePicURL}
             username={this.state.username}
             userPageURL={this.state.userPageURL}
@@ -97,7 +97,7 @@ class App extends React.Component {
             path="/stats"
             chartData={this.state.chartData}
             loggedIn={this.state.loggedIn}
-            playlistName={this.state.activePlaylistName}
+            playlist={this.state.playlists[this.state.activePlaylist]}
             profilePicURL={this.state.profilePicURL}
             username={this.state.username}
             userPageURL={this.state.userPageURL}

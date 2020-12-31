@@ -2,7 +2,6 @@ import React from 'react'
 import { Radar } from '@reactchartjs/react-chart.js'
 import Nav from './nav'
 
-
 const chartOptions = {
   scale: {
     ticks: {
@@ -26,7 +25,6 @@ class Stats extends React.Component {
     return (
       <div>
         <div>
-
           <div className="hide-on-small-only">
             {this.contentNormal()}
           </div>
@@ -44,7 +42,9 @@ class Stats extends React.Component {
         <div className='body-header'>
           <Nav profilePicURL={this.props.profilePicURL} username={this.props.username} />
           <h1>Vibe Check...</h1>
-          <h2 className={this.props.playlistName ? '' : 'pulse'}>{this.props.playlistName ?? "Select a playlist"}</h2>
+          <h2 className={this.props.playlist ? '' : 'pulse'}>
+            {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
+          </h2>
         </div>
         <div>
           {this.props.chartData ? <div className="chart-container" style={{ position: 'relative' }}>
@@ -56,17 +56,24 @@ class Stats extends React.Component {
   }
 
   contentMobile() {
+    const stats = this.props.chartData ?
+      <div className="chart-container" style={{ position: 'relative' }}>
+        <Radar data={this.props.chartData} options={chartOptions} height='200px' />
+      </div> : null;
+
     return (
       <div className='page'>
-        <div id='body-header-mobile'>
-          <h3>Vibe Check...</h3>
-          <h4>{this.props.playlistName}</h4>
-        </div>
-        <div>
-          {this.props.chartData ? <div className="chart-container" style={{ position: 'relative' }}>
-            <Radar data={this.props.chartData} options={chartOptions} height='200px' />
-          </div> : null}
-        </div>
+        {this.props.playlist ? <>
+          <div id='body-header-mobile'>
+            <div id='cover-wrapper'>
+              <img src={this.props.playlist.images[0].url} alt='playlist cover art' />
+              <img src={this.props.playlist.images[0].url} id='blurred' alt='playlist cover art blurred' />
+            </div>
+            <h3>Vibe Check...</h3>
+            <h4>{this.props.playlist.name}</h4>
+          </div>
+          <div>{stats}</div>
+        </> : null}
       </div>
     );
   }

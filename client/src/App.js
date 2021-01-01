@@ -15,7 +15,8 @@ class App extends React.Component {
   state = {
     activePlaylist: -1,
     activePlaylistName: undefined,
-    chartData: undefined,
+    activePlaylistTracks: undefined,
+    loading: false,
     loggedIn: false,
     playlists: [],
     profilePicURL: undefined,
@@ -26,6 +27,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.clickPlaylistItem = this.clickPlaylistItem.bind(this);
+    this.getPlaylistAudioFeatures = this.getPlaylistAudioFeatures.bind(this);
+    this.apiCall = this.apiCall.bind(this);
   }
 
   async componentDidMount() {
@@ -33,8 +36,8 @@ class App extends React.Component {
     const access_token = params.access_token;
     if (access_token) {
       spotifyApi.setAccessToken(access_token);
-      this.getPlaylists();
-      this.getUserInfo();
+      this.apiCall(() => this.getPlaylists());
+      this.apiCall(() => this.getUserInfo());
       this.setState({ loggedIn: true });
     }
   }
@@ -71,9 +74,11 @@ class App extends React.Component {
         </div>
         <div className='content col s12 m9 l9 '>
           <Stats
-            chartData={this.state.chartData}
+            getPlaylistAudioFeatures={() => this.apiCall(() => this.getPlaylistAudioFeatures())}
+            loading={this.state.loading}
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
+            playlistTracks={this.state.activePlaylistTracks}
             profilePicURL={this.state.profilePicURL}
             username={this.state.username}
             userPageURL={this.state.userPageURL}
@@ -95,9 +100,11 @@ class App extends React.Component {
           />
           <Stats
             path="/stats"
-            chartData={this.state.chartData}
+            getPlaylistAudioFeatures={() => this.apiCall(() => this.getPlaylistAudioFeatures())}
+            loading={this.state.loading}
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
+            playlistTracks={this.state.activePlaylistTracks}
             profilePicURL={this.state.profilePicURL}
             username={this.state.username}
             userPageURL={this.state.userPageURL}
@@ -133,62 +140,83 @@ class App extends React.Component {
         activePlaylistName: isSame ? undefined : playlist.name,
       })
     }, () =>
-      this.getPlaylistChart(playlist)
+      this.genPlaylistData(playlist)
     );
   }
 
   /**
-   * Get chart data for a playlist, if there's one selected
+   * Get stats data for a playlist, if there's one selected
    */
-  async getPlaylistChart(playlist) {
+  async genPlaylistData(playlist) {
     if (this.state.activePlaylist === -1) {
-      this.setState({ chartData: undefined });
+      this.setState({ activePlaylistTracks: undefined });
       return;
     }
+    this.toggleLoading();
 
-    const stats = await this.getPlaylistStats(playlist);
-    if (stats !== null) {
-      const chartData = {
-        labels: stats.labels,
-        datasets: [
-          {
-            data: stats.data,
-            backgroundColor: 'rgba(29, 185, 84, 0.5)',
-            borderColor: 'rgba(5, 237, 87, 1)',
-            borderWidth: 1,
-          }
-        ]
-      };
-      this.setState({ chartData: chartData });
+    const tracks = await this.apiCall(() => this.getPlaylistTracks(playlist));
+    // const audioFeatures = await this.apiCall(() => this.getPlaylistAudioFeatures(tracks));
+
+    if (tracks !== null) {
+      this.setState({ activePlaylistTracks: tracks });
     }
     else {
-      this.setState({ chartData: undefined })
+      this.setState({ activePlaylistTracks: undefined })
     }
+    this.toggleLoading();
   }
 
-  async getPlaylists() {
-    const playlists = await spotifyApi.getUserPlaylists();
-    this.setState({ playlists: playlists.items });
-  }
-
-  async getPlaylistStats(playlist) {
+  async apiCall(func) {
     try {
-      const tracks = (await spotifyApi.getPlaylistTracks(playlist.id)).items;
-      const trackIDs = tracks.map(trackObj => trackObj.track.id);
-      const audioFeatures = (await spotifyApi.getAudioFeaturesForTracks(trackIDs)).audio_features;
-      return {
-        labels: ["Energy", "Danceability", "Tempo", "Valence"],
-        data: [
-          avgList(audioFeatures.map(t => t.energy)),
-          avgList(audioFeatures.map(t => t.danceability)),
-          avgList(audioFeatures.map(t => t.valence)),
-          avgList(audioFeatures.map(t => t.tempo / 250))
-        ]
-      };
+      return func()
     } catch (error) {
       this.setState({ loggedIn: false });
       return null;
     }
+  }
+
+  async getPlaylists() {
+    let playlists = [];
+    let data = null;
+    let i = 0;
+    do {
+      data = await spotifyApi.getUserPlaylists({ limit: 50, offset: 50 * i++ });
+      playlists = playlists.concat(data.items)
+    } while (data.next !== null);
+    this.setState({ playlists: playlists });
+  }
+
+  async getPlaylistTracks(playlist) {
+    let tracks = [];
+    let playlistData = null;
+    let i = 0;
+    do {
+      playlistData = await spotifyApi.getPlaylistTracks(playlist.id, { offset: 100 * i++ });
+      tracks = tracks.concat(playlistData.items);
+    } while (playlistData.next !== null);
+    return tracks;
+  }
+
+  async getPlaylistAudioFeatures() {
+    const trackIDs = this.state.playlistTracks.map(trackObj => trackObj.track.id);
+
+    let audioFeatures = [];
+    let audioFeaturesData = null;
+    let i = 0;
+    do {
+      const slice = trackIDs.slice(100 * i, 100 * (i + 1));
+      audioFeaturesData = await spotifyApi.getAudioFeaturesForTracks(slice);
+      audioFeatures = audioFeatures.concat(audioFeaturesData.audio_features);
+      i++;
+    } while (100 * i < trackIDs.length);
+
+    audioFeatures = audioFeatures.filter(x => x !== null);
+    return {
+      "Energy": audioFeatures.map(t => t.energy),
+      "Danceability": audioFeatures.map(t => t.danceability),
+      "Valence": audioFeatures.map(t => t.valence),
+      "Tempo": audioFeatures.map(t => t.tempo),
+    };
   }
 
   async getUserInfo() {
@@ -198,11 +226,10 @@ class App extends React.Component {
       this.setState({ profilePicURL: user.images[0].url });
     }
   }
-}
 
-function avgList(list) {
-  const sum = list.reduce((a, b) => a + b, 0);
-  return sum / list.length;
+  toggleLoading() {
+    this.setState(prevState => ({ loading: !prevState.loading }));
+  }
 }
 
 function getHashParams() {

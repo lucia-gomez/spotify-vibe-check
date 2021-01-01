@@ -14,7 +14,7 @@ var cookieParser = require('cookie-parser');
 var path = require('path');
 
 var client_id = 'f726b221632b49cca6e2c371ca045921'; // Your client id
-var client_secret = process.env.CLIENT_SECRET || '3935ec2f5340412db58af2dbdae3b2cb'; // Your secret
+var client_secret = process.env.CLIENT_SECRET || 'SECRET'; // Your secret
 var redirect_uri = server_url + '/callback'; // Your redirect uri
 
 /**

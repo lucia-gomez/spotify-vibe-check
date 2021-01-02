@@ -1,6 +1,7 @@
 import React from 'react'
 import { Bar, HorizontalBar } from '@reactchartjs/react-chart.js'
 import Nav from './nav'
+import { TrackGrid } from './trackGrid';
 
 const chartOptions = {
   scale: {
@@ -26,6 +27,13 @@ class Stats extends React.Component {
   state = {
     popularitySelected: undefined,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.loading) {
+      return { popularitySelected: undefined };
+    }
+    return null;
+  }
 
   render() {
     return (
@@ -91,12 +99,16 @@ class Stats extends React.Component {
   getAnalysis(mobile = false) {
     return (
       <div className='stats'>
-        {this.getPopularityGraph(mobile)}
+        {StatsSection(
+          "Popularity Contest",
+          "How popular are the songs on your playlist?",
+          this.getPopularitySection(mobile),
+        )}
       </div>
     );
   }
 
-  getPopularityGraph(mobile) {
+  getPopularitySection(mobile) {
     const popularityBins = this.getPopularityData();
     const chartData = popularityBins.map(x => x.length);
     const clickFn = (x, y, z) => this.onClickPopularityChart(x, y, z);
@@ -105,11 +117,11 @@ class Stats extends React.Component {
       datasets: [{
         data: chartData,
         backgroundColor: 'rgba(29, 185, 84, 1)',
-        hoverBackgroundColor: 'rgba(231, 174, 15, 1)'
+        hoverBackgroundColor: 'rgba(38, 252, 114, 1)'
       }],
     };
     const options = {
-      maintainAspectRatio: !mobile,
+      maintainAspectRatio: false,
       legend: {
         display: false,
       },
@@ -129,7 +141,7 @@ class Stats extends React.Component {
             display: false
           },
           ticks: {
-            fontColor: "white",
+            fontColor: "#b2b2b2",
           }
         }],
         yAxes: [{
@@ -137,7 +149,7 @@ class Stats extends React.Component {
             display: false
           },
           ticks: {
-            fontColor: "white",
+            fontColor: "#b2b2b2",
           }
         }]
       },
@@ -151,10 +163,20 @@ class Stats extends React.Component {
         }
       },
     }
+
+    const style = mobile ? { height: '30vh', width: '100%' } : { height: '50vh' }
     return (
       <>
-        {mobile ? <HorizontalBar data={data} options={options} /> : <Bar data={data} options={options} />}
-        {this.getPopularityDrilldown(popularityBins)}
+        <div style={style}>
+          <div style={style} className='popularity-section'>
+            {mobile ? <HorizontalBar data={data} options={options} /> : <Bar data={data} options={options} />}
+          </div>
+        </div>
+        <div>
+          <div className='popularity-section'>
+            {this.getPopularityDrilldown(popularityBins)}
+          </div>
+        </div>
       </>
     );
   }
@@ -165,12 +187,10 @@ class Stats extends React.Component {
       <div id='popularityDrilldown'>
         {p ?
           <div>
-            <h5>{`${p.numSongs} ${p.label} song${p.numSongs === 1 ? '' : 's'}`}</h5>
-            <ul>
-              {popularityBins[p.index].map((s, i) => <li key={i}>{s.name}</li>)}
-            </ul>
+            <p>{`${p.numSongs} ${p.label} song${p.numSongs === 1 ? '' : 's'}`}</p>
+            {TrackGrid(popularityBins[p.index])}
           </div>
-          : <h5>Click on a category to learn more</h5>
+          : <p>Click on a category to learn more</p>
         }
       </div>
     );
@@ -188,7 +208,7 @@ class Stats extends React.Component {
         const pop = x.track.popularity;
         return pop >= minVal && pop < maxVal;
       });
-      songsInBins.push(filtered.map(x => ({ name: x.track.name })));
+      songsInBins.push(filtered);
     }
     return songsInBins;
   }
@@ -206,6 +226,18 @@ class Stats extends React.Component {
     );
   }
 }
+
+const StatsSection = (title, caption, ...children) => {
+  return (
+    <div className='stats-section'>
+      <div className='stats-section-header'>
+        <h3>{title}</h3>
+        <p>{caption}</p>
+      </div>
+      {children.map((child, i) => <div key={i}>{child}</div>)}
+    </div>
+  );
+};
 
 // function binList(list, binSize, numBins) {
 //   let bins = [];

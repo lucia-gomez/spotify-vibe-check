@@ -30,7 +30,6 @@ class App extends React.Component {
     super(props);
     this.clickPlaylistItem = this.clickPlaylistItem.bind(this);
     this.getPlaylistAudioFeatures = this.getPlaylistAudioFeatures.bind(this);
-    this.apiCall = this.apiCall.bind(this);
   }
 
   async componentDidMount() {
@@ -38,8 +37,8 @@ class App extends React.Component {
     const access_token = params.access_token;
     if (access_token) {
       spotifyApi.setAccessToken(access_token);
-      this.apiCall(() => this.getPlaylists());
-      this.apiCall(() => this.getUserInfo());
+      this.getPlaylists();
+      this.getUserInfo();
       this.setState({ loggedIn: true });
     }
   }
@@ -76,7 +75,7 @@ class App extends React.Component {
         </div>
         <div className='content col s12 m9 l9 '>
           <Stats
-            getPlaylistAudioFeatures={() => this.apiCall(() => this.getPlaylistAudioFeatures())}
+            getPlaylistAudioFeatures={() => this.getPlaylistAudioFeatures()}
             loading={this.state.loading}
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
@@ -102,7 +101,7 @@ class App extends React.Component {
           />
           <Stats
             path="/stats"
-            getPlaylistAudioFeatures={() => this.apiCall(() => this.getPlaylistAudioFeatures())}
+            getPlaylistAudioFeatures={() => this.getPlaylistAudioFeatures()}
             loading={this.state.loading}
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
@@ -143,24 +142,17 @@ class App extends React.Component {
     }
     this.toggleLoading();
 
-    const tracks = await this.apiCall(() => this.getPlaylistTracks(playlist));
-    // const audioFeatures = await this.apiCall(() => this.getPlaylistAudioFeatures(tracks));
-
-    if (tracks !== null) {
-      this.setState({ activePlaylistTracks: tracks });
-    }
-    else {
-      this.setState({ activePlaylistTracks: undefined })
-    }
-    this.toggleLoading();
-  }
-
-  async apiCall(func) {
     try {
-      return func()
-    } catch (error) {
-      this.setState({ loggedIn: false });
-      return null;
+      const tracks = await this.getPlaylistTracks(playlist);
+      if (tracks !== null) {
+        this.setState({ activePlaylistTracks: tracks });
+      }
+      else {
+        this.setState({ activePlaylistTracks: undefined })
+      }
+      this.toggleLoading();
+    } catch (ex) {
+      this.logout();
     }
   }
 
@@ -168,11 +160,15 @@ class App extends React.Component {
     let playlists = [];
     let data = null;
     let i = 0;
-    do {
-      data = await spotifyApi.getUserPlaylists({ limit: 50, offset: 50 * i++ });
-      playlists = playlists.concat(data.items)
-    } while (data.next !== null);
-    this.setState({ playlists: playlists });
+    try {
+      do {
+        data = await spotifyApi.getUserPlaylists({ limit: 50, offset: 50 * i++ });
+        playlists = playlists.concat(data.items)
+      } while (data.next !== null);
+      this.setState({ playlists: playlists });
+    } catch (ex) {
+      this.logout();
+    }
   }
 
   async getPlaylistTracks(playlist) {
@@ -209,15 +205,23 @@ class App extends React.Component {
   }
 
   async getUserInfo() {
-    const user = await spotifyApi.getMe();
-    this.setState({ username: user.display_name, userPageURL: user.external_urls.spotify });
-    if (user.images.length > 0) {
-      this.setState({ profilePicURL: user.images[0].url });
+    try {
+      const user = await spotifyApi.getMe();
+      this.setState({ username: user.display_name, userPageURL: user.external_urls.spotify });
+      if (user.images.length > 0) {
+        this.setState({ profilePicURL: user.images[0].url });
+      }
+    } catch (ex) {
+      this.logout();
     }
   }
 
   toggleLoading() {
     this.setState(prevState => ({ loading: !prevState.loading }));
+  }
+
+  logout() {
+    this.setState({ loggedIn: false });
   }
 }
 

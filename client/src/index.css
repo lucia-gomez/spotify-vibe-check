@@ -315,7 +315,7 @@ body::-webkit-scrollbar {
   color: var(--white);
 }
 
-.material-icons {
+.material-icons, .material-icons-outlined {
   line-height: unset;
 }
 
@@ -348,6 +348,10 @@ body::-webkit-scrollbar {
 .tab-btn {
   font-weight: 400;
   text-align: center;
+}
+
+.tab-btn.active {
+  color: var(--white);
 }
 
 .pulse {

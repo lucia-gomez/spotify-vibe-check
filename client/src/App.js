@@ -1,11 +1,12 @@
 import React from 'react';
-import { Router, Link } from "@reach/router"
+import { Router } from "@reach/router"
 import SpotifyWebApi from 'spotify-web-api-js';
 
 import Playlists from './playlists';
 import Stats from './stats';
 import Settings from './settings';
 import SideNav from './sideNav';
+import NavMobile from './navMobile';
 
 import { server_url } from './util';
 
@@ -20,6 +21,7 @@ class App extends React.Component {
     loggedIn: false,
     playlists: [],
     profilePicURL: undefined,
+    selectedNavTab: 0,
     username: '???',
     userPageURL: '/#',
   }
@@ -111,20 +113,7 @@ class App extends React.Component {
           />
           <Settings path="/settings" />
         </Router>
-        <div id='tabs' className='valign-wrapper'>
-          <Link to="/">
-            <div className='tab-btn'>
-              <i className='material-icons-outlined'>library_music</i>
-              <p>Playlists</p>
-            </div>
-          </Link>
-          <Link to='/settings'>
-            <div className='tab-btn'>
-              <i className='material-icons-outlined'>settings</i>
-              <p>Settings</p>
-            </div>
-          </Link>
-        </div>
+        <NavMobile />
       </>
     );
   }

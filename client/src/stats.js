@@ -55,13 +55,24 @@ class Stats extends React.Component {
       <>
         <div className='body-header'>
           <Nav profilePicURL={this.props.profilePicURL} username={this.props.username} />
-          <div className='flex-row'>
-            {this.getCoverArt()}
-            <div className='flex-col' style={{ alignSelf: 'flex-end' }}>
-              <h1>Vibe Check...</h1>
-              <h2 className={this.props.playlist ? '' : 'pulse'}>
-                {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
-              </h2>
+          <div className='hide-on-med-and-down'>
+            <div className='flex-row'>
+              {this.getCoverArt()}
+              <div className='flex-col' style={{ alignSelf: 'flex-end' }}>
+                <h1>Vibe Check...</h1>
+                <h2 className={this.props.playlist ? '' : 'pulse'}>
+                  {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div className='show-on-medium hide-on-large-only'>
+            <div id='body-header-mobile'>
+              {this.getCoverArt()}
+              <div id='selected-playlist-header'>
+                <h3>Vibe Check...</h3>
+                <h4>{this.props.playlist ? this.props.playlist.name : "Select a playlist"}</h4>
+              </div>
             </div>
           </div>
         </div>
@@ -100,6 +111,7 @@ class Stats extends React.Component {
     return (
       <div className='stats'>
         {StatsSection(
+          mobile,
           "Popularity Contest",
           "How popular are the songs on your playlist?",
           this.getPopularitySection(mobile),
@@ -220,18 +232,18 @@ class Stats extends React.Component {
   getCoverArt() {
     return (this.props.playlist ?
       <div id='cover-wrapper'>
-        <img src={this.props.playlist.images[0].url} alt='playlist cover art' />
+        <img src={this.props.playlist.images[0].url} id='not-blurred' alt='playlist cover art' />
         <img src={this.props.playlist.images[0].url} id='blurred' alt='playlist cover art blurred' />
       </div> : null
     );
   }
 }
 
-const StatsSection = (title, caption, ...children) => {
+const StatsSection = (mobile, title, caption, ...children) => {
   return (
     <div className='stats-section'>
       <div className='stats-section-header'>
-        <h3>{title}</h3>
+        {mobile ? <h5>{title}</h5> : <h3>{title}</h3>}
         <p>{caption}</p>
       </div>
       {children.map((child, i) => <div key={i}>{child}</div>)}

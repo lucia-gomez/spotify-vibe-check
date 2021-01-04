@@ -13,7 +13,7 @@ class Playlists extends React.Component {
           {this.props.playlists.map((playlist, i) =>
             <Link to='/stats' key={i}>
               <div onClick={() => this.props.onclick(playlist, i)}>
-                {MobilePlaylistItem(playlist.images[0].url, playlist.name, playlist.owner.display_name)}
+                {MobilePlaylistItem(playlist)}
               </div>
             </Link>
           )}

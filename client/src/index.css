@@ -48,6 +48,14 @@ body {
   padding: 20px 10px;
 }
 
+@media only screen and (min-width: 576px) and (max-width: 768px) {
+  #selected-playlist-header {
+    margin: auto;
+    text-align: center;
+    width: fit-content;
+  }
+}
+
 #cover-wrapper {
   position: relative;
   height: 30vh;
@@ -63,15 +71,20 @@ body {
   object-fit: cover;
 }
 
+#not-blurred {
+  position: relative;
+  z-index: 2;
+}
+
 #blurred {
-  filter: blur(100px);
+  filter: blur(150px);
   position: absolute;
   top: 0;
-  z-index: -1;
+  z-index: 0;
   visibility: hidden;
 }
 
-@media only screen and (max-width: 576px) {
+@media only screen and (max-width: 768px) {
   #cover-wrapper {
     margin: 0 auto;
     margin-bottom: 20px;
@@ -162,12 +175,12 @@ a:hover {
   background-color: var(--light-black);
 }
 
-body::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: var(--gray);
   border-radius: 100px;
 }
 
-body::-webkit-scrollbar {
+::-webkit-scrollbar {
   background: none;
   width: 10px;
 }
@@ -178,16 +191,6 @@ body::-webkit-scrollbar {
   margin-bottom: 0px;
   overflow: hidden; 
   overflow-y: scroll;
-}
-
-.collection::-webkit-scrollbar-thumb {
-  background: var(--gray);
-  border-radius: 100px;
-}
-
-.collection::-webkit-scrollbar {
-  background: none;
-  width: 10px;
 }
 
 .collection *.collection-item {
@@ -209,6 +212,10 @@ body::-webkit-scrollbar {
 .collection .collection-item:hover {
   background: var(--black);
   color: var(--white);
+}
+
+.nav-wrapper {
+  margin-bottom: 40px;
 }
 
 #profile-pic {
@@ -266,9 +273,11 @@ body::-webkit-scrollbar {
 
 .playlist-item {
   padding: 10px;
+  max-width: 90vw;
 }
 
 .playlist-item img {
+  height: 60px;
   width: 60px;
 }
 
@@ -282,6 +291,12 @@ body::-webkit-scrollbar {
 
 .playlist-item p {
   color: var(--light-gray);
+}
+
+.playlist-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 @media only screen and (max-width: 576px) {
@@ -315,7 +330,7 @@ body::-webkit-scrollbar {
   color: var(--white);
 }
 
-.material-icons {
+.material-icons, .material-icons-outlined {
   line-height: unset;
 }
 
@@ -348,6 +363,100 @@ body::-webkit-scrollbar {
 .tab-btn {
   font-weight: 400;
   text-align: center;
+}
+
+.tab-btn.active {
+  color: var(--white);
+}
+
+.stats {
+  padding: 20px;
+}
+
+.stats-section h3 {
+  margin-bottom: 10px;
+}
+
+.stats-section h5 {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.stats-section-header {
+  background: var(--gray);
+  border-radius: 0px 100px 100px 0px;
+  margin-bottom: 30px;
+  margin-left: -20px;
+  padding: 10px 50px 5px 30px;
+  width: fit-content;
+}
+
+@media only screen and (max-width: 576px) {
+  .stats-section-header {
+    margin-left: -35px;
+  }
+}
+
+.stats-section p {
+  color: var(--gray-body-text);
+  /* font-weight: 800; */
+  margin-bottom: 10px;
+}
+
+.popularity-section {
+  padding: 10px;
+}
+
+@media only screen and (max-width: 576px) {
+  .popularity-section {
+    padding: 0px;
+    padding-bottom: 20px;
+  }
+}
+
+tbody {
+  display:block;
+  height:40vh;
+  overflow:auto;
+}
+
+@media only screen and (max-width: 576px) {
+  tbody {
+    height: 25vh;
+  }
+}
+
+thead, tbody tr {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+
+table.striped > thead {
+  background-color: var(--black);
+}
+
+table.striped > tbody > tr:nth-child(even) {
+  background-color: var(--black);
+}
+
+table.striped > tbody > tr:nth-child(odd) {
+  background-color: var(--light-black);
+}
+
+table.highlight > tbody > tr:hover {
+  background-color: rgba(29, 185, 84, 0.4);
+}
+
+th {
+  font-weight: 800;
+}
+
+td {
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pulse {

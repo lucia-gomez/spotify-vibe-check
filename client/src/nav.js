@@ -20,19 +20,24 @@ class Nav extends React.Component {
       </div>
     );
 
-    return (
-      <div className="nav-wrapper">
-        <div id='profile-info'>
-          <div className='flex-row valign-wrapper'>
-            <div className='flex-row valign-wrapper'>
-              <img src={this.props.profilePicURL} id="profile-pic" alt="your Spotify profile"></img>
-              <p>{this.props.username}</p>
-            </div>
-            {dropdown}
-          </div>
-        </div>
-      </div>
+    let profilePicURL = undefined;
+    if (this.props.user && this.props.user.images.length > 0) {
+      profilePicURL = this.props.user.images[0].url;
+    }
 
+    return (
+      this.props.user ?
+        <div className="nav-wrapper">
+          <div id='profile-info'>
+            <div className='flex-row valign-wrapper'>
+              <div className='flex-row valign-wrapper'>
+                {profilePicURL ? <img src={profilePicURL} id="profile-pic" alt="your Spotify profile"></img> : null}
+                <p>{this.props.user.display_name}</p>
+              </div>
+              {dropdown}
+            </div>
+          </div>
+        </div> : null
     );
   }
 }

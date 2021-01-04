@@ -54,7 +54,7 @@ class Stats extends React.Component {
     return (
       <>
         <div className='body-header'>
-          <Nav profilePicURL={this.props.profilePicURL} username={this.props.username} />
+          <Nav user={this.props.user} />
           <div className='hide-on-med-and-down'>
             <div className='flex-row'>
               {this.getCoverArt()}

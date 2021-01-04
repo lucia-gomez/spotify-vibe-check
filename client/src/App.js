@@ -20,10 +20,8 @@ class App extends React.Component {
     loading: false,
     loggedIn: false,
     playlists: [],
-    profilePicURL: undefined,
     selectedNavTab: 0,
-    username: '???',
-    userPageURL: '/#',
+    user: undefined,
   }
 
   constructor(props) {
@@ -80,9 +78,7 @@ class App extends React.Component {
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
             playlistTracks={this.state.activePlaylistTracks}
-            profilePicURL={this.state.profilePicURL}
-            username={this.state.username}
-            userPageURL={this.state.userPageURL}
+            user={this.state.user}
             renderPlaylistsMobile={() => this.renderPlaylistsMobile()}
           />
         </div>
@@ -106,9 +102,7 @@ class App extends React.Component {
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
             playlistTracks={this.state.activePlaylistTracks}
-            profilePicURL={this.state.profilePicURL}
-            username={this.state.username}
-            userPageURL={this.state.userPageURL}
+            user={this.state.user}
           />
           <Settings path="/settings" />
         </Router>
@@ -207,10 +201,7 @@ class App extends React.Component {
   async getUserInfo() {
     try {
       const user = await spotifyApi.getMe();
-      this.setState({ username: user.display_name, userPageURL: user.external_urls.spotify });
-      if (user.images.length > 0) {
-        this.setState({ profilePicURL: user.images[0].url });
-      }
+      this.setState({ user });
     } catch (ex) {
       this.logout();
     }

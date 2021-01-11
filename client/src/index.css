@@ -373,6 +373,10 @@ a:hover {
   padding: 20px;
 }
 
+.stats-section {
+  padding-top: 40px;
+}
+
 .stats-section h3 {
   margin-bottom: 10px;
 }
@@ -392,6 +396,9 @@ a:hover {
 }
 
 @media only screen and (max-width: 576px) {
+  .stats {
+    padding: 10px;
+  }
   .stats-section-header {
     margin-left: -35px;
   }
@@ -399,19 +406,7 @@ a:hover {
 
 .stats-section p {
   color: var(--gray-body-text);
-  /* font-weight: 800; */
   margin-bottom: 10px;
-}
-
-.popularity-section {
-  padding: 10px;
-}
-
-@media only screen and (max-width: 576px) {
-  .popularity-section {
-    padding: 0px;
-    padding-bottom: 20px;
-  }
 }
 
 tbody {
@@ -454,9 +449,21 @@ th {
 
 td {
   font-weight: 400;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.chart {
+  margin-bottom: 10px;
+}
+
+#bubble-chart svg {
+  height: 550px;
+  width: 100%;
+}
+
+@media only screen and (max-width: 576px) {
+  #bubble-chart svg {
+    height: 325px;
+  }
 }
 
 .pulse {

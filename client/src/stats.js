@@ -1,36 +1,23 @@
-import React from 'react'
-import { Bar, HorizontalBar } from '@reactchartjs/react-chart.js'
-import Nav from './nav'
+import React from 'react';
+import { Bar, HorizontalBar } from '@reactchartjs/react-chart.js';
+import Nav from './nav';
 import { TrackGrid } from './trackGrid';
-
-const chartOptions = {
-  scale: {
-    ticks: {
-      display: false,
-      showLabelBackdrop: false,
-      min: 0,
-      max: 100,
-    },
-    angleLines: {
-      color: 'rgb(54, 54, 54)',
-    },
-    gridLines: {
-      color: 'rgb(54, 54, 54)',
-    }
-  },
-  legend: {
-    display: false
-  }
-}
+import GenreBubbleChart from './bubbleChart';
 
 class Stats extends React.Component {
   state = {
+    genreSelected: undefined,
     popularitySelected: undefined,
   };
 
+  constructor(props) {
+    super(props);
+    this.wrapper = React.createRef();
+  }
+
   static getDerivedStateFromProps(props, state) {
     if (props.loading) {
-      return { popularitySelected: undefined };
+      return { genreSelected: undefined, popularitySelected: undefined };
     }
     return null;
   }
@@ -76,23 +63,12 @@ class Stats extends React.Component {
             </div>
           </div>
         </div>
-        {this.props.loading ? "loading" :
-          <div>
-            {this.props.playlistTracks ? this.getAnalysis() : null}
-            {/* {this.props.chartData ? <div className="chart-container" style={{ position: 'relative' }}>
-              <Radar data={this.props.chartData} options={chartOptions} height='100px' />
-            </div> : null} */}
-          </div>}
+        {this.props.loading ? "loading" : this.props.playlistTracks ? this.getAnalysis() : null}
       </>
     );
   }
 
   contentMobile() {
-    // const stats = this.props.chartData ?
-    //   <div className="chart-container" style={{ position: 'relative' }}>
-    //     <Radar data={this.props.chartData} options={chartOptions} height='200px' />
-    //   </div> : null;
-
     return (
       <div className='page'>
         {this.props.playlist ? <>
@@ -115,6 +91,12 @@ class Stats extends React.Component {
           "Popularity Contest",
           "How popular are the songs on your playlist?",
           this.getPopularitySection(mobile),
+        )}
+        {StatsSection(
+          mobile,
+          "Genres",
+          "How diverse is your playlist?",
+          this.getGenreSection(mobile),
         )}
       </div>
     );
@@ -179,16 +161,10 @@ class Stats extends React.Component {
     const style = mobile ? { height: '30vh', width: '100%' } : { height: '50vh' }
     return (
       <>
-        <div style={style}>
-          <div style={style} className='popularity-section'>
-            {mobile ? <HorizontalBar data={data} options={options} /> : <Bar data={data} options={options} />}
-          </div>
+        <div style={style} className='chart'>
+          {mobile ? <HorizontalBar data={data} options={options} /> : <Bar data={data} options={options} />}
         </div>
-        <div>
-          <div className='popularity-section'>
-            {this.getPopularityDrilldown(popularityBins)}
-          </div>
-        </div>
+        {this.getPopularityDrilldown(popularityBins)}
       </>
     );
   }
@@ -196,15 +172,15 @@ class Stats extends React.Component {
   getPopularityDrilldown(popularityBins) {
     const p = this.state.popularitySelected;
     return (
-      <div id='popularityDrilldown'>
+      <>
         {p ?
-          <div>
+          <>
             <p>{`${p.numSongs} ${p.label} song${p.numSongs === 1 ? '' : 's'}`}</p>
             {TrackGrid(popularityBins[p.index])}
-          </div>
+          </>
           : <p>Click on a category to learn more</p>
         }
-      </div>
+      </>
     );
   }
 
@@ -229,6 +205,43 @@ class Stats extends React.Component {
     this.setState({ popularitySelected: { index, label, numSongs } });
   }
 
+  getGenreSection(mobile) {
+    if (!this.props.genreData) {
+      return null;
+    }
+    const genres = Object.entries(this.props.genreData).map(x => [x[0], x[1].size]);
+    const genreCountsSorted = genres.sort((a, b) => b[1] - a[1]);
+
+    return (
+      <>
+        <div id='bubble-chart'>
+          <GenreBubbleChart
+            data={genreCountsSorted}
+            mobile={mobile}
+            onClick={(genre) => this.setState({ genreSelected: genre })}
+          />
+        </div>
+        {this.getGenreDrilldown()}
+      </>
+    );
+  }
+
+  getGenreDrilldown() {
+    const g = this.state.genreSelected;
+    const numSongs = g ? this.props.genreData[g].size : 0;
+    return (
+      <>
+        {g ?
+          <>
+            <p>{`${numSongs} ${g} song${numSongs === 1 ? '' : 's'}`}</p>
+            {TrackGrid([...this.props.genreData[g]])}
+          </>
+          : <p>Click on a category to learn more</p>
+        }
+      </>
+    );
+  }
+
   getCoverArt() {
     return (this.props.playlist ?
       <div id='cover-wrapper'>
@@ -250,16 +263,6 @@ const StatsSection = (mobile, title, caption, ...children) => {
     </div>
   );
 };
-
-// function binList(list, binSize, numBins) {
-//   let bins = [];
-//   for (let i = 0; i < numBins; i++) {
-//     const minVal = i * binSize;
-//     const maxVal = (i + 1) * binSize;
-//     bins.push(list.filter(x => x >= minVal && x < maxVal).length);
-//   }
-//   return bins;
-// }
 
 // function avgList(list) {
 //   const sum = list.reduce((a, b) => a + b, 0);

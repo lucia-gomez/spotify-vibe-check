@@ -9,8 +9,8 @@
     "express": "~4.16.0",
     "querystring": "~0.2.0",
     "request": "~2.83.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   },
   "engines": {
     "node": "12.x"

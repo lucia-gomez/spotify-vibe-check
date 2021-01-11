@@ -373,6 +373,10 @@ a:hover {
   padding: 20px;
 }
 
+.stats-section {
+  padding-top: 40px;
+}
+
 .stats-section h3 {
   margin-bottom: 10px;
 }
@@ -388,10 +392,20 @@ a:hover {
   margin-bottom: 30px;
   margin-left: -20px;
   padding: 10px 50px 5px 30px;
+  position: relative;
   width: fit-content;
 }
 
+.stats-section-header i {
+  position: absolute;
+  right: 10px;
+  top: 35%;
+}
+
 @media only screen and (max-width: 576px) {
+  .stats {
+    padding: 10px;
+  }
   .stats-section-header {
     margin-left: -35px;
   }
@@ -399,24 +413,12 @@ a:hover {
 
 .stats-section p {
   color: var(--gray-body-text);
-  /* font-weight: 800; */
   margin-bottom: 10px;
-}
-
-.popularity-section {
-  padding: 10px;
-}
-
-@media only screen and (max-width: 576px) {
-  .popularity-section {
-    padding: 0px;
-    padding-bottom: 20px;
-  }
 }
 
 tbody {
   display:block;
-  height:40vh;
+  max-height:40vh;
   overflow:auto;
 }
 
@@ -454,9 +456,26 @@ th {
 
 td {
   font-weight: 400;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.chart {
+  margin-bottom: 10px;
+}
+
+#bubble-chart svg {
+  height: 550px;
+  width: 100%;
+}
+
+@media only screen and (max-width: 576px) {
+  #bubble-chart svg {
+    height: 325px;
+  }
+}
+
+.material-tooltip {
+  max-width: 300px;
+  text-align: left;
 }
 
 .pulse {

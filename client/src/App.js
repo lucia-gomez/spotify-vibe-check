@@ -15,6 +15,7 @@ const spotifyApi = new SpotifyWebApi();
 class App extends React.Component {
   state = {
     activePlaylist: -1,
+    activePlaylistGenres: undefined,
     activePlaylistName: undefined,
     activePlaylistTracks: undefined,
     loading: false,
@@ -74,12 +75,12 @@ class App extends React.Component {
         <div className='content col s12 m9 l9 '>
           <Stats
             getPlaylistAudioFeatures={() => this.getPlaylistAudioFeatures()}
+            genreData={this.state.activePlaylistGenres}
             loading={this.state.loading}
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
             playlistTracks={this.state.activePlaylistTracks}
             user={this.state.user}
-            renderPlaylistsMobile={() => this.renderPlaylistsMobile()}
           />
         </div>
       </div>
@@ -98,6 +99,7 @@ class App extends React.Component {
           <Stats
             path="/stats"
             getPlaylistAudioFeatures={() => this.getPlaylistAudioFeatures()}
+            genreData={this.state.activePlaylistGenres}
             loading={this.state.loading}
             loggedIn={this.state.loggedIn}
             playlist={this.state.playlists[this.state.activePlaylist]}
@@ -137,12 +139,22 @@ class App extends React.Component {
     this.toggleLoading();
 
     try {
+      // first load tracks
       const tracks = await this.getPlaylistTracks(playlist);
       if (tracks !== null) {
         this.setState({ activePlaylistTracks: tracks });
       }
       else {
-        this.setState({ activePlaylistTracks: undefined })
+        this.setState({ activePlaylistTracks: undefined });
+      }
+
+      // then load additional stats using tracks
+      // if any stats are null, make everything null and then we should logout
+      const genres = await this.getGenreData();
+      if (genres !== null) {
+        this.setState({ activePlaylistGenres: genres });
+      } else {
+        this.setState({ activePlaylistTracks: undefined, activePlaylistGenres: undefined });
       }
       this.toggleLoading();
     } catch (ex) {
@@ -196,6 +208,45 @@ class App extends React.Component {
       "Valence": audioFeatures.map(t => t.valence),
       "Tempo": audioFeatures.map(t => t.tempo),
     };
+  }
+
+  async getGenreData() {
+    // get all artist IDs for playlist tracks
+    const artistIDAll = this.state.activePlaylistTracks.map(trackObj =>
+      trackObj.track.artists.map(artist => artist.id)
+    ).flat();
+    const artistIDs = [...new Set(artistIDAll)];
+
+    try {
+      let artistToGenre = {};
+      let i = 0;
+      while (i < artistIDs.length) {
+        const slice = artistIDs.slice(i, i + 50);
+        i += 50;
+        const artists = (await spotifyApi.getArtists(slice)).artists;
+        // map artist IDs to list of artist's genres
+        artists.forEach(artist => {
+          artistToGenre[artist.id] = artist.genres;
+        })
+      }
+
+      // map genres to playlist tracks
+      let genres = {};
+      this.state.activePlaylistTracks.forEach(trackObj => {
+        const artistIDs = trackObj.track.artists.map(artist => artist.id);
+        const trackGenres = artistIDs.map(artistID => artistToGenre[artistID]).flat();
+        trackGenres.forEach(genre => {
+          if (!(genre in genres)) {
+            genres[genre] = new Set();
+          }
+          genres[genre].add(trackObj);
+        });
+      })
+      return genres;
+    } catch (ex) {
+      this.logout();
+      return null;
+    }
   }
 
   async getUserInfo() {

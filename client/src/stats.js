@@ -1,36 +1,24 @@
-import React from 'react'
-import { Bar, HorizontalBar } from '@reactchartjs/react-chart.js'
-import Nav from './nav'
+import React from 'react';
+import { Bar, HorizontalBar } from '@reactchartjs/react-chart.js';
+import Nav from './nav';
 import { TrackGrid } from './trackGrid';
-
-const chartOptions = {
-  scale: {
-    ticks: {
-      display: false,
-      showLabelBackdrop: false,
-      min: 0,
-      max: 100,
-    },
-    angleLines: {
-      color: 'rgb(54, 54, 54)',
-    },
-    gridLines: {
-      color: 'rgb(54, 54, 54)',
-    }
-  },
-  legend: {
-    display: false
-  }
-}
+import GenreBubbleChart from './bubbleChart';
+import M from "materialize-css";
 
 class Stats extends React.Component {
   state = {
+    genreSelected: undefined,
     popularitySelected: undefined,
   };
 
+  componentDidUpdate() {
+    let tooltips = document.querySelectorAll(".tooltipped");
+    M.Tooltip.init(tooltips, {});
+  }
+
   static getDerivedStateFromProps(props, state) {
     if (props.loading) {
-      return { popularitySelected: undefined };
+      return { genreSelected: undefined, popularitySelected: undefined };
     }
     return null;
   }
@@ -76,23 +64,12 @@ class Stats extends React.Component {
             </div>
           </div>
         </div>
-        {this.props.loading ? "loading" :
-          <div>
-            {this.props.playlistTracks ? this.getAnalysis() : null}
-            {/* {this.props.chartData ? <div className="chart-container" style={{ position: 'relative' }}>
-              <Radar data={this.props.chartData} options={chartOptions} height='100px' />
-            </div> : null} */}
-          </div>}
+        {this.props.loading ? "loading" : this.props.playlistTracks ? this.getAnalysis() : null}
       </>
     );
   }
 
   contentMobile() {
-    // const stats = this.props.chartData ?
-    //   <div className="chart-container" style={{ position: 'relative' }}>
-    //     <Radar data={this.props.chartData} options={chartOptions} height='200px' />
-    //   </div> : null;
-
     return (
       <div className='page'>
         {this.props.playlist ? <>
@@ -114,7 +91,15 @@ class Stats extends React.Component {
           mobile,
           "Popularity Contest",
           "How popular are the songs on your playlist?",
+          "Popularity scores are calculated by Spotify, so don't shoot the messenger",
           this.getPopularitySection(mobile),
+        )}
+        {StatsSection(
+          mobile,
+          "Genres",
+          "How diverse is your playlist?",
+          "Spotify has some very specific genres. Below, each bubble represents the number of songs in one genre",
+          this.getGenreSection(mobile),
         )}
       </div>
     );
@@ -179,16 +164,10 @@ class Stats extends React.Component {
     const style = mobile ? { height: '30vh', width: '100%' } : { height: '50vh' }
     return (
       <>
-        <div style={style}>
-          <div style={style} className='popularity-section'>
-            {mobile ? <HorizontalBar data={data} options={options} /> : <Bar data={data} options={options} />}
-          </div>
+        <div style={style} className='chart'>
+          {mobile ? <HorizontalBar data={data} options={options} /> : <Bar data={data} options={options} />}
         </div>
-        <div>
-          <div className='popularity-section'>
-            {this.getPopularityDrilldown(popularityBins)}
-          </div>
-        </div>
+        {this.getPopularityDrilldown(popularityBins)}
       </>
     );
   }
@@ -196,15 +175,15 @@ class Stats extends React.Component {
   getPopularityDrilldown(popularityBins) {
     const p = this.state.popularitySelected;
     return (
-      <div id='popularityDrilldown'>
+      <>
         {p ?
-          <div>
-            <p>{`${p.numSongs} ${p.label} song${p.numSongs === 1 ? '' : 's'}`}</p>
+          <>
+            <h5>{`${p.numSongs} ${p.label} song${p.numSongs === 1 ? '' : 's'}`}</h5>
             {TrackGrid(popularityBins[p.index])}
-          </div>
-          : <p>Click on a category to learn more</p>
+          </>
+          : <h5>Click on a category to learn more</h5>
         }
-      </div>
+      </>
     );
   }
 
@@ -229,6 +208,43 @@ class Stats extends React.Component {
     this.setState({ popularitySelected: { index, label, numSongs } });
   }
 
+  getGenreSection(mobile) {
+    if (!this.props.genreData) {
+      return null;
+    }
+    const genres = Object.entries(this.props.genreData).map(x => [x[0], x[1].size]);
+    const genreCountsSorted = genres.sort((a, b) => b[1] - a[1]);
+
+    return (
+      <>
+        <div id='bubble-chart'>
+          <GenreBubbleChart
+            data={genreCountsSorted}
+            mobile={mobile}
+            onClick={(genre) => this.setState({ genreSelected: genre })}
+          />
+        </div>
+        {this.getGenreDrilldown()}
+      </>
+    );
+  }
+
+  getGenreDrilldown() {
+    const g = this.state.genreSelected;
+    const numSongs = g ? this.props.genreData[g].size : 0;
+    return (
+      <>
+        {g ?
+          <>
+            <h5>{`${numSongs} ${g} song${numSongs === 1 ? '' : 's'}`}</h5>
+            {TrackGrid([...this.props.genreData[g]])}
+          </>
+          : <h5>Click on a category to learn more</h5>
+        }
+      </>
+    );
+  }
+
   getCoverArt() {
     return (this.props.playlist ?
       <div id='cover-wrapper'>
@@ -239,27 +255,18 @@ class Stats extends React.Component {
   }
 }
 
-const StatsSection = (mobile, title, caption, ...children) => {
+const StatsSection = (mobile, title, caption, tooltipText, ...children) => {
   return (
     <div className='stats-section'>
       <div className='stats-section-header'>
         {mobile ? <h5>{title}</h5> : <h3>{title}</h3>}
         <p>{caption}</p>
+        <i className='material-icons-outlined tooltipped' data-tooltip={tooltipText}>help</i>
       </div>
       {children.map((child, i) => <div key={i}>{child}</div>)}
     </div>
   );
 };
-
-// function binList(list, binSize, numBins) {
-//   let bins = [];
-//   for (let i = 0; i < numBins; i++) {
-//     const minVal = i * binSize;
-//     const maxVal = (i + 1) * binSize;
-//     bins.push(list.filter(x => x >= minVal && x < maxVal).length);
-//   }
-//   return bins;
-// }
 
 // function avgList(list) {
 //   const sum = list.reduce((a, b) => a + b, 0);

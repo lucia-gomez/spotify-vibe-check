@@ -3,6 +3,7 @@ import { Bar, HorizontalBar } from '@reactchartjs/react-chart.js';
 import Nav from './nav';
 import { TrackGrid } from './trackGrid';
 import GenreBubbleChart from './bubbleChart';
+import M from "materialize-css";
 
 class Stats extends React.Component {
   state = {
@@ -10,9 +11,9 @@ class Stats extends React.Component {
     popularitySelected: undefined,
   };
 
-  constructor(props) {
-    super(props);
-    this.wrapper = React.createRef();
+  componentDidUpdate() {
+    let tooltips = document.querySelectorAll(".tooltipped");
+    M.Tooltip.init(tooltips, {});
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -90,12 +91,14 @@ class Stats extends React.Component {
           mobile,
           "Popularity Contest",
           "How popular are the songs on your playlist?",
+          "Popularity scores are calculated by Spotify, so don't shoot the messenger",
           this.getPopularitySection(mobile),
         )}
         {StatsSection(
           mobile,
           "Genres",
           "How diverse is your playlist?",
+          "Spotify has some very specific genres. Below, each bubble represents the number of songs in one genre",
           this.getGenreSection(mobile),
         )}
       </div>
@@ -175,10 +178,10 @@ class Stats extends React.Component {
       <>
         {p ?
           <>
-            <p>{`${p.numSongs} ${p.label} song${p.numSongs === 1 ? '' : 's'}`}</p>
+            <h5>{`${p.numSongs} ${p.label} song${p.numSongs === 1 ? '' : 's'}`}</h5>
             {TrackGrid(popularityBins[p.index])}
           </>
-          : <p>Click on a category to learn more</p>
+          : <h5>Click on a category to learn more</h5>
         }
       </>
     );
@@ -233,10 +236,10 @@ class Stats extends React.Component {
       <>
         {g ?
           <>
-            <p>{`${numSongs} ${g} song${numSongs === 1 ? '' : 's'}`}</p>
+            <h5>{`${numSongs} ${g} song${numSongs === 1 ? '' : 's'}`}</h5>
             {TrackGrid([...this.props.genreData[g]])}
           </>
-          : <p>Click on a category to learn more</p>
+          : <h5>Click on a category to learn more</h5>
         }
       </>
     );
@@ -252,12 +255,13 @@ class Stats extends React.Component {
   }
 }
 
-const StatsSection = (mobile, title, caption, ...children) => {
+const StatsSection = (mobile, title, caption, tooltipText, ...children) => {
   return (
     <div className='stats-section'>
       <div className='stats-section-header'>
         {mobile ? <h5>{title}</h5> : <h3>{title}</h3>}
         <p>{caption}</p>
+        <i className='material-icons-outlined tooltipped' data-tooltip={tooltipText}>help</i>
       </div>
       {children.map((child, i) => <div key={i}>{child}</div>)}
     </div>

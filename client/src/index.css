@@ -392,7 +392,14 @@ a:hover {
   margin-bottom: 30px;
   margin-left: -20px;
   padding: 10px 50px 5px 30px;
+  position: relative;
   width: fit-content;
+}
+
+.stats-section-header i {
+  position: absolute;
+  right: 10px;
+  top: 35%;
 }
 
 @media only screen and (max-width: 576px) {
@@ -411,7 +418,7 @@ a:hover {
 
 tbody {
   display:block;
-  height:40vh;
+  max-height:40vh;
   overflow:auto;
 }
 
@@ -464,6 +471,11 @@ td {
   #bubble-chart svg {
     height: 325px;
   }
+}
+
+.material-tooltip {
+  max-width: 300px;
+  text-align: left;
 }
 
 .pulse {

@@ -9,13 +9,13 @@ class GenreBubbleChart extends React.Component {
    */
   getBubbleColor(i, n) {
     if (i < n * 0.1) {
-      return '#1DB954';
+      return '#107E65';
     } else if (i < n * 0.3) {
-      return '#1db988';
+      return '#169C62';
     } else if (i < n * 0.7) {
-      return '#1db9ac';
+      return '#1DB954';
     } else {
-      return '#1d9cb9';
+      return '#64D662';
     }
   }
 

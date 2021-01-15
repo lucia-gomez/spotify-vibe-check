@@ -40,7 +40,6 @@ body {
 }
 
 .body-header {
-  margin-bottom: 50px;
   padding: 20px;
 }
 
@@ -439,12 +438,6 @@ tbody {
   display:block;
   max-height:40vh;
   overflow:auto;
-}
-
-@media only screen and (max-width: 576px) {
-  tbody {
-    height: 25vh;
-  }
 }
 
 thead, tbody tr {

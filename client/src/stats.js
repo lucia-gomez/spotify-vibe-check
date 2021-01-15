@@ -104,10 +104,18 @@ class Stats extends React.Component {
 
   getPopularitySection(mobile) {
     const popularityBins = this.getPopularityData();
-    const chartData = popularityBins.map(x => x.length);
-    const clickFn = (x, y, z) => this.onClickPopularityChart(x, y, z);
+    let clickFn = (x, y, z) => this.onClickPopularityChart(x, y, z);
+    let chartData = popularityBins.map(x => x.length);
+    let labels = ["wtf", "yikes", "hipster trash", "...interesting", "thin ice", "well-known", "iconic", "popular", "hot", "overplayed"];
+
+    if (mobile) {
+      labels = labels.reverse();
+      chartData = chartData.reverse();
+      clickFn = (x, y, z) => this.onClickPopularityChart(9 - x, y, z);
+    }
+
     const data = {
-      labels: ["wtf", "yikes", "hipster trash", "...interesting", "thin ice", "well-known", "iconic", "popular", "hot", "overplayed"],
+      labels: labels,
       datasets: [{
         data: chartData,
         backgroundColor: 'rgba(29, 185, 84, 1)',

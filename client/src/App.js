@@ -211,7 +211,8 @@ class App extends React.Component {
     const artistIDAll = this.state.activePlaylistTracks.map(trackObj =>
       trackObj.track.artists.map(artist => artist.id)
     ).flat();
-    const artistIDs = [...new Set(artistIDAll)];
+    // get unique, non-null artist IDs
+    const artistIDs = [...new Set(artistIDAll)].filter(Boolean);
 
     try {
       let artistToGenre = {};

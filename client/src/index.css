@@ -218,6 +218,18 @@ a:hover {
   margin-bottom: 40px;
 }
 
+@media only screen and (max-width: 576px) {
+  .nav-wrapper {
+    background-color: var(--light-black-mobile);
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    margin: -15px -15px 40px -15px;
+    z-index: 10;
+    padding: 10px;
+  }
+}
+
 #profile-pic {
   border-radius: 300px;
   height: 30px;
@@ -241,25 +253,32 @@ a:hover {
   border-radius: 75px;
   background: var(--gray);
   padding: 5px 15px;
+  z-index: 1;
 }
 
 @media only screen and (max-width: 576px) {
   #profile-info {
-    /* background: none; */
+    background: none;
     border-radius: 100px;
     padding: 5px;
-    right: 10px;
-    top: 20px;
+    position: unset;
   }
 
   #profile-pic {
     height: 40px;
-    margin: 0px;
   }
 }
 
 #profile-info p {
   margin: 0px;
+  max-width: 50vw;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#back {
+  color: var(--green);
 }
 
 #login {
@@ -482,7 +501,6 @@ td {
   transform-origin: left top;
   animation: pulse 3s infinite;
   -webkit-animation: pulse 3s infinite;
-  width: 70%;
 }
 
 @keyframes pulse {

@@ -43,24 +43,20 @@ class Stats extends React.Component {
       <>
         <div className='body-header'>
           <Nav user={this.props.user} />
-          <div className='hide-on-med-and-down'>
-            <div className='flex-row'>
-              {this.getCoverArt()}
-              <div className='flex-col' style={{ alignSelf: 'flex-end' }}>
-                <h1>Vibe Check...</h1>
-                <h2 className={this.props.playlist ? '' : 'pulse'}>
-                  {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
-                </h2>
-              </div>
+          <div className='hide-on-med-and-down flex-row'>
+            {this.getCoverArt()}
+            <div className='flex-col' style={{ alignSelf: 'flex-end' }}>
+              <h1>Vibe Check...</h1>
+              <h2 className={this.props.playlist ? '' : 'pulse'}>
+                {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
+              </h2>
             </div>
           </div>
-          <div className='show-on-medium hide-on-large-only'>
-            <div id='body-header-mobile'>
-              {this.getCoverArt()}
-              <div id='selected-playlist-header'>
-                <h3>Vibe Check...</h3>
-                <h4>{this.props.playlist ? this.props.playlist.name : "Select a playlist"}</h4>
-              </div>
+          <div className='show-on-medium hide-on-large-only' id='body-header-mobile'>
+            {this.getCoverArt()}
+            <div id='selected-playlist-header'>
+              <h1>Vibe Check...</h1>
+              <h2>{this.props.playlist ? this.props.playlist.name : "Select a playlist"}</h2>
             </div>
           </div>
         </div>
@@ -72,13 +68,14 @@ class Stats extends React.Component {
   contentMobile() {
     return (
       <div className='page'>
+        <Nav user={this.props.user} />
         {this.props.playlist ? <>
           <div id='body-header-mobile'>
             {this.getCoverArt()}
             <h3>Vibe Check...</h3>
             <h4>{this.props.playlist.name}</h4>
           </div>
-          {this.props.playlistTracks ? this.getAnalysis(true) : null}
+          {this.props.loading ? "loading" : this.props.playlistTracks ? this.getAnalysis(true) : null}
         </> : null}
       </div>
     );

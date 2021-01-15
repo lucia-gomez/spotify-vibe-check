@@ -4,9 +4,7 @@ import SpotifyWebApi from 'spotify-web-api-js';
 
 import Playlists from './playlists';
 import Stats from './stats';
-import Settings from './settings';
 import SideNav from './sideNav';
-import NavMobile from './navMobile';
 
 import { server_url } from './util';
 
@@ -106,9 +104,7 @@ class App extends React.Component {
             playlistTracks={this.state.activePlaylistTracks}
             user={this.state.user}
           />
-          <Settings path="/settings" />
         </Router>
-        <NavMobile />
       </>
     );
   }

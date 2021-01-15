@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from '@reach/router';
 import { server_url } from './util';
 
 class Nav extends React.Component {
@@ -27,15 +28,17 @@ class Nav extends React.Component {
 
     return (
       this.props.user ?
-        <div className="nav-wrapper">
-          <div id='profile-info'>
-            <div className='flex-row valign-wrapper'>
-              <div className='flex-row valign-wrapper'>
-                {profilePicURL ? <img src={profilePicURL} id="profile-pic" alt="your Spotify profile"></img> : null}
-                <p>{this.props.user.display_name}</p>
-              </div>
-              {dropdown}
-            </div>
+        <div className="nav-wrapper flex-row valign-wrapper">
+          <div className='hide-on-med-and-up'>
+            <Link to={'/'} className='flex-row valign-wrapper' id='back'>
+              <i className='material-icons'>arrow_back_ios_new</i>
+              <p>Back</p>
+            </Link>
+          </div>
+          <div id='profile-info' className='flex-row valign-wrapper'>
+            {profilePicURL ? <img src={profilePicURL} id="profile-pic" alt="your Spotify profile"></img> : null}
+            <p>{this.props.user.display_name}</p>
+            {dropdown}
           </div>
         </div> : null
     );

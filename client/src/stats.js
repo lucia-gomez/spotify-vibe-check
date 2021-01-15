@@ -4,6 +4,7 @@ import Nav from './nav';
 import { TrackGrid } from './trackGrid';
 import GenreBubbleChart from './bubbleChart';
 import M from "materialize-css";
+import { WaveLoading } from 'react-loadingg';
 
 class Stats extends React.Component {
   state = {
@@ -60,7 +61,7 @@ class Stats extends React.Component {
             </div>
           </div>
         </div>
-        {this.props.loading ? "loading" : this.props.playlistTracks ? this.getAnalysis() : null}
+        {this.getContentBody(false)}
       </>
     );
   }
@@ -75,10 +76,19 @@ class Stats extends React.Component {
             <h3>Vibe Check...</h3>
             <h4>{this.props.playlist.name}</h4>
           </div>
-          {this.props.loading ? "loading" : this.props.playlistTracks ? this.getAnalysis(true) : null}
+          {this.getContentBody(true)}
         </> : null}
       </div>
     );
+  }
+
+  getContentBody(mobile) {
+    if (this.props.loading) {
+      return <WaveLoading color='#1DB954' size='large' style={{ position: 'unset', margin: 'auto', marginTop: '100px' }} />;
+    } else if (this.props.playlistTracks) {
+      return this.getAnalysis(mobile);
+    }
+    return null;
   }
 
   getAnalysis(mobile = false) {

@@ -4,9 +4,7 @@ import SpotifyWebApi from 'spotify-web-api-js';
 
 import Playlists from './playlists';
 import Stats from './stats';
-import Settings from './settings';
 import SideNav from './sideNav';
-import NavMobile from './navMobile';
 
 import { server_url } from './util';
 
@@ -106,9 +104,7 @@ class App extends React.Component {
             playlistTracks={this.state.activePlaylistTracks}
             user={this.state.user}
           />
-          <Settings path="/settings" />
         </Router>
-        <NavMobile />
       </>
     );
   }
@@ -215,7 +211,8 @@ class App extends React.Component {
     const artistIDAll = this.state.activePlaylistTracks.map(trackObj =>
       trackObj.track.artists.map(artist => artist.id)
     ).flat();
-    const artistIDs = [...new Set(artistIDAll)];
+    // get unique, non-null artist IDs
+    const artistIDs = [...new Set(artistIDAll)].filter(Boolean);
 
     try {
       let artistToGenre = {};

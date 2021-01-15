@@ -4,6 +4,7 @@ import Nav from './nav';
 import { TrackGrid } from './trackGrid';
 import GenreBubbleChart from './bubbleChart';
 import M from "materialize-css";
+import { WaveLoading } from 'react-loadingg';
 
 class Stats extends React.Component {
   state = {
@@ -43,28 +44,24 @@ class Stats extends React.Component {
       <>
         <div className='body-header'>
           <Nav user={this.props.user} />
-          <div className='hide-on-med-and-down'>
-            <div className='flex-row'>
-              {this.getCoverArt()}
-              <div className='flex-col' style={{ alignSelf: 'flex-end' }}>
-                <h1>Vibe Check...</h1>
-                <h2 className={this.props.playlist ? '' : 'pulse'}>
-                  {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
-                </h2>
-              </div>
+          <div className='hide-on-med-and-down flex-row'>
+            {this.getCoverArt()}
+            <div className='flex-col' style={{ alignSelf: 'flex-end' }}>
+              <h1>Vibe Check...</h1>
+              <h2 className={this.props.playlist ? '' : 'pulse'}>
+                {this.props.playlist ? this.props.playlist.name : "Select a playlist"}
+              </h2>
             </div>
           </div>
-          <div className='show-on-medium hide-on-large-only'>
-            <div id='body-header-mobile'>
-              {this.getCoverArt()}
-              <div id='selected-playlist-header'>
-                <h3>Vibe Check...</h3>
-                <h4>{this.props.playlist ? this.props.playlist.name : "Select a playlist"}</h4>
-              </div>
+          <div className='show-on-medium hide-on-large-only' id='body-header-mobile'>
+            {this.getCoverArt()}
+            <div id='selected-playlist-header'>
+              <h1>Vibe Check...</h1>
+              <h2>{this.props.playlist ? this.props.playlist.name : "Select a playlist"}</h2>
             </div>
           </div>
         </div>
-        {this.props.loading ? "loading" : this.props.playlistTracks ? this.getAnalysis() : null}
+        {this.getContentBody(false)}
       </>
     );
   }
@@ -72,16 +69,26 @@ class Stats extends React.Component {
   contentMobile() {
     return (
       <div className='page'>
+        <Nav user={this.props.user} />
         {this.props.playlist ? <>
           <div id='body-header-mobile'>
             {this.getCoverArt()}
             <h3>Vibe Check...</h3>
             <h4>{this.props.playlist.name}</h4>
           </div>
-          {this.props.playlistTracks ? this.getAnalysis(true) : null}
+          {this.getContentBody(true)}
         </> : null}
       </div>
     );
+  }
+
+  getContentBody(mobile) {
+    if (this.props.loading) {
+      return <WaveLoading color='#1DB954' size='large' style={{ position: 'unset', margin: 'auto', marginTop: '100px' }} />;
+    } else if (this.props.playlistTracks) {
+      return this.getAnalysis(mobile);
+    }
+    return null;
   }
 
   getAnalysis(mobile = false) {
@@ -107,10 +114,18 @@ class Stats extends React.Component {
 
   getPopularitySection(mobile) {
     const popularityBins = this.getPopularityData();
-    const chartData = popularityBins.map(x => x.length);
-    const clickFn = (x, y, z) => this.onClickPopularityChart(x, y, z);
+    let clickFn = (x, y, z) => this.onClickPopularityChart(x, y, z);
+    let chartData = popularityBins.map(x => x.length);
+    let labels = ["wtf", "yikes", "hipster trash", "...interesting", "thin ice", "well-known", "iconic", "popular", "hot", "overplayed"];
+
+    if (mobile) {
+      labels = labels.reverse();
+      chartData = chartData.reverse();
+      clickFn = (x, y, z) => this.onClickPopularityChart(9 - x, y, z);
+    }
+
     const data = {
-      labels: ["wtf", "yikes", "hipster trash", "...interesting", "thin ice", "well-known", "iconic", "popular", "hot", "overplayed"],
+      labels: labels,
       datasets: [{
         data: chartData,
         backgroundColor: 'rgba(29, 185, 84, 1)',

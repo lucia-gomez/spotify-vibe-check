@@ -8,6 +8,7 @@ class Playlists extends React.Component {
       <div className='page'>
         <div id='body-header-mobile'>
           <h3>Vibe Check...</h3>
+          <h5>Select a playlist</h5>
         </div>
         <ul>
           {this.props.playlists.map((playlist, i) =>
